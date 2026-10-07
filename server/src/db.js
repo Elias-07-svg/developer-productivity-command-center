@@ -7,9 +7,11 @@ let initialized;
 export function getPool() {
   if (!process.env.DATABASE_URL) return null;
   if (!pool) {
+    const connectionUrl = new URL(process.env.DATABASE_URL);
+    // Keep TLS certificate and hostname verification explicit with node-postgres.
+    connectionUrl.searchParams.set('sslmode', 'verify-full');
     pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+      connectionString: connectionUrl.toString(),
       max: 5,
       idleTimeoutMillis: 30_000,
     });

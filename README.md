@@ -52,7 +52,7 @@ render.yaml             Render web-service deployment blueprint
 
 Prerequisites: Node.js 22.12 or newer and npm.
 
-Create a PostgreSQL database (for example, a Neon project) and copy its pooled connection string. Save it as `DATABASE_URL` in `server/.env` (start from `.env.example`). Keep this file private; it is ignored by Git.
+Create a PostgreSQL database (for example, a Neon project) and copy its pooled connection string. Save it as `DATABASE_URL` in `server/.env` (start from `.env.example`). The server enforces TLS with full certificate verification. Keep this file private; it is ignored by Git.
 
 Open two terminals in the project root.
 
