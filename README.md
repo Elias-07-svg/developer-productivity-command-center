@@ -1,33 +1,48 @@
 # DevPulse — Developer Productivity Command Center
 
-A portfolio project for exploring GitHub repository and activity data from one responsive dashboard.
+DevPulse is a full-stack portfolio project that turns a GitHub username into a searchable dashboard of public repositories. It demonstrates a React interface, an Express API, and an external REST API integration.
+
+> **Portfolio project:** This is an independently built learning project, not professional employment experience.
+
+## Features
+
+- Look up a GitHub user's public profile and repositories
+- Search repositories by name, description, or language
+- Sort repositories by latest update or star count
+- View follower and public repository counts
+- See a language breakdown by repository count
+- Responsive layout with loading, empty, and error states
+- Readable API errors for missing users and GitHub rate limits
+
+The current version reads public GitHub data. It does not sign users in or access private repositories.
 
 ## Stack
 
-- React + Vite (client)
-- Node.js + Express (API)
-- PostgreSQL + Prisma (persistence, added in a later milestone)
-- GitHub REST API (public repository data first)
+- **Client:** React, Vite, JavaScript
+- **API:** Node.js, Express 5
+- **External API:** GitHub REST API
+- **Planned persistence:** PostgreSQL and Prisma
 
-## Current structure
+## Project structure
 
 ```text
-client/                 React app
-  src/                  UI entry point and styles
-server/                 Express API
-  src/                  API entry point and routes
-  prisma/               Database schema and migrations
+client/
+  src/                 React UI and styles
+  vite.config.js       Local API proxy
+server/
+  src/index.js          Express app and production static hosting
+  src/routes/           Health and GitHub endpoints
+  prisma/               Reserved for the database milestone
+render.yaml             Render web-service deployment blueprint
 ```
-
-## Prerequisites
-
-- Node.js 22 or newer
-- npm
-- PostgreSQL for the database milestone (not needed for the initial health-check milestone)
 
 ## Run locally
 
-Open two terminals from this directory.
+Prerequisites: Node.js 22.12 or newer and npm.
+
+Open two terminals in the project root.
+
+**Terminal 1 — API**
 
 ```sh
 cd server
@@ -35,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Then in the second terminal:
+**Terminal 2 — client**
 
 ```sh
 cd client
@@ -43,14 +58,33 @@ npm install
 npm run dev
 ```
 
-The client runs at `http://localhost:5173`; the API health check is at `http://localhost:4000/api/health`.
+Open `http://localhost:5173`. The Vite development server forwards `/api` requests to Express at `http://localhost:4000`.
 
-## Planned milestones
+## API
 
-1. Project shell and client/server connection. **Complete**
-2. GitHub username lookup and public repository dashboard. **Complete**
-3. Repository search, sorting, and language breakdown. **Complete**
-4. PostgreSQL persistence for saved accounts and preferences.
-5. Caching, polish, deployment, and portfolio documentation.
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Service health check |
+| `GET` | `/api/github/:username` | Public profile and up to 100 recently updated repositories |
 
-This repository is a learning and portfolio project, not professional employment experience.
+GitHub API access is performed by the server, so the browser does not call GitHub directly. A server-side `GITHUB_TOKEN` can be configured later to increase API rate limits; never put that token in the client or commit it to Git.
+
+## Deployment
+
+The repository includes a Render Blueprint in `render.yaml`. It builds the Vite client and serves the generated static files from Express, so the UI and API share one service and origin. To create the live demo, connect this GitHub repository in Render and deploy the Blueprint. Render assigns an `onrender.com` URL and can redeploy when changes are pushed to the configured branch. The deploy is not live yet.
+
+## Roadmap
+
+- [x] React and Express project shell
+- [x] GitHub public profile and repository lookup
+- [x] Repository search and sorting
+- [x] Language breakdown
+- [ ] Capture and add an application screenshot
+- [ ] Deploy the live demo
+- [ ] Add database persistence for saved profiles and preferences
+- [ ] Add authenticated GitHub access for private repositories
+- [ ] Add caching and a richer activity view
+
+## License
+
+No license has been selected yet. Add one before inviting others to reuse or redistribute the code.
