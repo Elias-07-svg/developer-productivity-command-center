@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import healthRouter from './routes/health.js';
 import githubRouter from './routes/github.js';
+import savedProfilesRouter from './routes/savedProfiles.js';
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
@@ -17,6 +18,12 @@ app.use(express.json());
 if (existsSync(clientBuildDirectory)) app.use(express.static(clientBuildDirectory));
 app.use('/api/health', healthRouter);
 app.use('/api/github', githubRouter);
+app.use('/api/saved-profiles', savedProfilesRouter);
+
+app.use((error, _req, res, _next) => {
+  console.error('API request failed:', error.message);
+  res.status(500).json({ error: { message: 'Something went wrong while processing the request.' } });
+});
 
 app.use((req, res) => {
   if (!req.path.startsWith('/api/') && existsSync(join(clientBuildDirectory, 'index.html'))) {

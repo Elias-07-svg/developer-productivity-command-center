@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 function formatDate(value) {
   return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(value));
@@ -11,6 +11,51 @@ export default function App() {
   const [sort, setSort] = useState('updated');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [savedProfiles, setSavedProfiles] = useState([]);
+  const [savedError, setSavedError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  async function loadSavedProfiles() {
+    try {
+      const response = await fetch('/api/saved-profiles');
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error?.message || 'Saved profiles are unavailable.');
+      setSavedProfiles(result.profiles);
+      setSavedError('');
+    } catch (loadError) {
+      setSavedError(loadError.message);
+    }
+  }
+
+  useEffect(() => { loadSavedProfiles(); }, []);
+
+  async function saveCurrentProfile() {
+    if (!dashboard?.profile?.username) return;
+    setSaving(true);
+    setSavedError('');
+    try {
+      const response = await fetch('/api/saved-profiles', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: dashboard.profile.username }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error?.message || 'Could not save this profile.');
+      await loadSavedProfiles();
+    } catch (saveError) {
+      setSavedError(saveError.message);
+    } finally { setSaving(false); }
+  }
+
+  async function removeSavedProfile(profileUsername) {
+    try {
+      const response = await fetch(`/api/saved-profiles/${encodeURIComponent(profileUsername)}`, { method: 'DELETE' });
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error?.message || 'Could not remove this profile.');
+      }
+      setSavedProfiles((profiles) => profiles.filter((profile) => profile.username.toLowerCase() !== profileUsername.toLowerCase()));
+    } catch (removeError) { setSavedError(removeError.message); }
+  }
 
   const repositories = useMemo(() => {
     const filtered = (dashboard?.repositories ?? []).filter((repo) =>
@@ -71,6 +116,15 @@ export default function App() {
         {error && <p className="form-error" role="alert">{error}</p>}
       </section>
 
+      <section className="saved-profiles" aria-label="Saved GitHub profiles">
+        <div className="saved-heading"><div><p className="eyebrow">YOUR SHORTLIST</p><h2>Saved profiles</h2></div><span>{savedProfiles.length} saved</span></div>
+        {savedProfiles.length ? <ul>{savedProfiles.map((profile) => <li key={profile.username}>
+          <button className="saved-profile-link" type="button" onClick={() => { setUsername(profile.username); document.getElementById('github-username')?.focus(); }}><span className="saved-avatar">{profile.username.slice(0, 1).toUpperCase()}</span><span>@{profile.username}</span></button>
+          <button className="remove-saved" type="button" onClick={() => removeSavedProfile(profile.username)} aria-label={`Remove ${profile.username} from saved profiles`}>Remove</button>
+        </li>)}</ul> : <p className="saved-empty">Save a profile after looking it up to keep it on this device.</p>}
+        {savedError && <p className="saved-error" role="status">{savedError.includes('DATABASE_URL') ? 'Saved profiles will be available once the hosted database is connected.' : savedError}</p>}
+      </section>
+
       {!dashboard && !error && !loading && (
         <section className="setup-card empty-prompt">
           <div className="card-icon" aria-hidden="true">⌕</div>
@@ -84,7 +138,7 @@ export default function App() {
           <div className="profile-card">
             <img className="avatar" src={dashboard.profile.avatarUrl} alt="" />
             <div className="profile-info"><p className="eyebrow">GITHUB PROFILE</p><h2>{dashboard.profile.name || dashboard.profile.username}</h2><a href={dashboard.profile.profileUrl} target="_blank" rel="noreferrer">@{dashboard.profile.username} <span aria-hidden="true">↗</span></a>{dashboard.profile.bio && <p className="bio">{dashboard.profile.bio}</p>}</div>
-            <div className="profile-stats"><div><strong>{dashboard.profile.publicRepos}</strong><span>public repos</span></div><div><strong>{dashboard.profile.followers}</strong><span>followers</span></div></div>
+            <div className="profile-actions"><div className="profile-stats"><div><strong>{dashboard.profile.publicRepos}</strong><span>public repos</span></div><div><strong>{dashboard.profile.followers}</strong><span>followers</span></div></div><button className="save-profile" type="button" onClick={saveCurrentProfile} disabled={saving || savedProfiles.some((profile) => profile.username.toLowerCase() === dashboard.profile.username.toLowerCase())}>{savedProfiles.some((profile) => profile.username.toLowerCase() === dashboard.profile.username.toLowerCase()) ? '✓ Saved' : saving ? 'Saving…' : '+ Save profile'}</button></div>
           </div>
 
           {languages.length > 0 && <section className="language-panel" aria-label="Repository language breakdown">

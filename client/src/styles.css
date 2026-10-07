@@ -101,4 +101,21 @@ h2 { margin: 0; font-size: 22px; letter-spacing: -.6px; }
 .no-repositories { display: grid; gap: 7px; padding: 24px; border: 1px dashed #ffffff20; border-radius: 12px; color: #95a2ae; text-align: center; }
 .no-repositories strong { color: #dce4eb; font: 600 14px 'Space Grotesk', sans-serif; }
 .no-repositories span { font-size: 12px; line-height: 1.5; }
+.saved-profiles { margin: -24px 0 36px; padding: 18px 21px; border: 1px solid #ffffff13; border-radius: 14px; background: #171f28; }
+.saved-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.saved-heading .eyebrow { margin-bottom: 5px; }
+.saved-heading h2 { font-size: 17px; }
+.saved-heading > span { color: #83919d; font-size: 11px; }
+.saved-profiles ul { display: flex; flex-wrap: wrap; gap: 9px; margin: 15px 0 0; padding: 0; list-style: none; }
+.saved-profiles li { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border: 1px solid #ffffff14; border-radius: 10px; background: #111820; }
+.saved-profile-link { display: flex; align-items: center; gap: 8px; border: 0; color: #d9e2e9; background: transparent; font: 12px 'DM Sans', sans-serif; cursor: pointer; }
+.saved-avatar { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 8px; color: #9be3c0; background: #9be3c018; font-size: 11px; font-weight: 700; }
+.remove-saved { border: 0; color: #778692; background: transparent; font: 10px 'DM Sans', sans-serif; cursor: pointer; }
+.remove-saved:hover { color: #f0a28f; }
+.saved-empty { margin: 13px 0 0; color: #71808d; font-size: 11px; }
+.saved-error { margin: 12px 0 0; color: #e6a58e; font-size: 11px; }
+.profile-actions { display: grid; justify-items: end; gap: 13px; }
+.save-profile { padding: 9px 12px; border: 1px solid #9be3c044; border-radius: 8px; color: #9be3c0; background: #9be3c012; font: 600 11px 'DM Sans', sans-serif; cursor: pointer; }
+.save-profile:disabled { opacity: .65; cursor: default; }
+@media (max-width: 700px) { .profile-actions { width: 100%; justify-items: start; } .profile-stats { width: 100%; } }
 @media (max-width: 600px) { .language-panel { padding: 18px; } .language-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; } }
