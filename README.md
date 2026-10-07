@@ -4,6 +4,12 @@ DevPulse is a full-stack portfolio project that turns a GitHub username into a s
 
 > **Portfolio project:** This is an independently built learning project, not professional employment experience.
 
+## Live demo
+
+[Open DevPulse](https://devpulse-command-center.onrender.com)
+
+The free web service may take about a minute to wake after being idle.
+
 ## Features
 
 - Look up a GitHub user's public profile and repositories
@@ -71,7 +77,7 @@ GitHub API access is performed by the server, so the browser does not call GitHu
 
 ## Deployment
 
-The repository includes a Render Blueprint in `render.yaml`. It builds the Vite client and serves the generated static files from Express, so the UI and API share one service and origin. To create the live demo, connect this GitHub repository in Render and deploy the Blueprint. Render assigns an `onrender.com` URL and can redeploy when changes are pushed to the configured branch. The deploy is not live yet.
+The repository includes a Render Blueprint in `render.yaml`. It builds the Vite client and serves the generated static files from Express, so the UI and API share one service and origin. Render deploys this repository's `main` branch. The current Blueprint uses Render's free plan.
 
 ## Roadmap
 
@@ -80,7 +86,7 @@ The repository includes a Render Blueprint in `render.yaml`. It builds the Vite 
 - [x] Repository search and sorting
 - [x] Language breakdown
 - [ ] Capture and add an application screenshot
-- [ ] Deploy the live demo
+- [x] Deploy the live demo
 - [ ] Add database persistence for saved profiles and preferences
 - [ ] Add authenticated GitHub access for private repositories
 - [ ] Add caching and a richer activity view
