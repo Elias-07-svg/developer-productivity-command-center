@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 const GITHUB_API = 'https://api.github.com';
 const USERNAME_PATTERN = /^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i;
+const README_AUDIT_LIMIT = 12;
 
 async function githubRequest(path) {
   const headers = {
@@ -40,6 +41,34 @@ router.get('/:username', async (req, res) => {
     }
 
     const repositories = await repositoriesResponse.json();
+    const repositoriesToAudit = repositories.filter((repo) => !repo.fork && !repo.archived).slice(0, README_AUDIT_LIMIT);
+    const readmeResults = new Map();
+    for (let index = 0; index < repositoriesToAudit.length; index += 3) {
+      const batch = repositoriesToAudit.slice(index, index + 3);
+      const results = await Promise.all(batch.map(async (repo) => {
+        try {
+          const owner = encodeURIComponent(profile.login);
+          const repository = encodeURIComponent(repo.name);
+          const [readmeResponse, workflowsResponse] = await Promise.all([
+            githubRequest(`/repos/${owner}/${repository}/readme`),
+            githubRequest(`/repos/${owner}/${repository}/actions/workflows?per_page=1`),
+          ]);
+          const hasReadme = readmeResponse.ok ? true : readmeResponse.status === 404 ? false : null;
+          let hasWorkflows = null;
+          if (workflowsResponse.ok) {
+            const workflowData = await workflowsResponse.json();
+            hasWorkflows = workflowData.total_count > 0;
+          } else if (workflowsResponse.status === 404) {
+            hasWorkflows = false;
+          }
+          return [repo.id, hasReadme, hasWorkflows];
+        } catch {
+          return [repo.id, null, null];
+        }
+      }));
+      results.forEach(([id, hasReadme, hasWorkflows]) => readmeResults.set(id, { hasReadme, hasWorkflows }));
+    }
+
     return res.json({
       profile: {
         username: profile.login,
@@ -60,8 +89,15 @@ router.get('/:username', async (req, res) => {
         stars: repo.stargazers_count,
         forks: repo.forks_count,
         updatedAt: repo.updated_at,
+        pushedAt: repo.pushed_at,
+        license: repo.license?.spdx_id || null,
+        topics: repo.topics || [],
+        archived: repo.archived,
+        hasReadme: readmeResults.get(repo.id)?.hasReadme ?? null,
+        hasWorkflows: readmeResults.get(repo.id)?.hasWorkflows ?? null,
       })),
       repositoryLimit: 100,
+      readmeAuditLimit: README_AUDIT_LIMIT,
     });
   } catch (error) {
     console.error('GitHub lookup failed:', error);

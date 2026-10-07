@@ -119,3 +119,26 @@ h2 { margin: 0; font-size: 22px; letter-spacing: -.6px; }
 .save-profile:disabled { opacity: .65; cursor: default; }
 @media (max-width: 700px) { .profile-actions { width: 100%; justify-items: start; } .profile-stats { width: 100%; } }
 @media (max-width: 600px) { .language-panel { padding: 18px; } .language-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; } }
+.audit-panel { margin-top: 14px; padding: 23px; border: 1px solid #9be3c022; border-radius: 14px; background: linear-gradient(135deg, #1b2929, #171f28 60%); }
+.audit-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.audit-heading .eyebrow { margin-bottom: 6px; }
+.audit-heading h2 { font-size: 19px; }
+.audit-heading > span { color: #74838f; font-size: 10px; }
+.audit-intro { margin: 11px 0 18px; color: #94a1ae; font-size: 12px; line-height: 1.6; }
+.audit-summary-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px; }
+.audit-summary-item { display: grid; gap: 5px; padding: 13px; border: 1px solid #ffffff12; border-radius: 10px; background: #10171d88; }
+.audit-summary-item strong { color: #e6edf1; font: 600 21px 'Space Grotesk', sans-serif; }
+.audit-summary-item span { color: #85939e; font-size: 10px; line-height: 1.4; }
+.audit-note { margin: 13px 0 0; color: #74838f; font-size: 10px; line-height: 1.5; }
+.repo-audit-list { display: grid; gap: 7px; margin: 0 0 18px; padding: 12px; border: 1px solid #ffffff0d; border-radius: 9px; background: #10171d70; }
+.repo-audit-item { display: grid; grid-template-columns: 17px 1fr; align-items: start; gap: 7px; color: #aab6c0; }
+.repo-audit-item > span:last-child { display: grid; gap: 2px; }
+.repo-audit-item strong { font-size: 10px; font-weight: 600; }
+.repo-audit-item small { color: #81909d; font-size: 10px; line-height: 1.4; }
+.audit-check-icon { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 5px; font-size: 10px; font-weight: 700; }
+.audit-ready .audit-check-icon { color: #9be3c0; background: #9be3c018; }
+.audit-missing .audit-check-icon { color: #efbd7c; background: #efbd7c18; }
+.audit-unknown .audit-check-icon { color: #83919d; background: #ffffff12; }
+@media (max-width: 850px) { .audit-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .audit-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .audit-heading { align-items: start; flex-direction: column; } }
+@media (max-width: 420px) { .audit-panel { padding: 17px; } }

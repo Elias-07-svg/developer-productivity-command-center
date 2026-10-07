@@ -1,6 +1,6 @@
 # DevPulse — Developer Productivity Command Center
 
-DevPulse is a full-stack portfolio project that turns a GitHub username into a searchable dashboard of public repositories. It demonstrates a React interface, an Express API, and an external REST API integration.
+DevPulse is a GitHub portfolio auditor. It reviews public repository basics and turns gaps—such as a missing README, description, license, or topic tags—into concrete next steps. It demonstrates a React interface, an Express API, GitHub REST API integration, and PostgreSQL-backed account watchlists.
 
 > **Portfolio project:** This is an independently built learning project, not professional employment experience.
 
@@ -12,16 +12,18 @@ The free web service may take about a minute to wake after being idle.
 
 ## Features
 
-- Look up a GitHub user's public profile and repositories
+- Audit a GitHub user's public repositories
+- See repository-level checks for README, description, license, topics, automated workflows, and recent activity
+- Get specific improvement suggestions instead of a single opaque portfolio score
+- Re-run an audit for accounts in a browser-specific watchlist
 - Search repositories by name, description, or language
 - Sort repositories by latest update or star count
 - View follower and public repository counts
 - See a language breakdown by repository count
 - Responsive layout with loading, empty, and error states
 - Readable API errors for missing users and GitHub rate limits
-- Save GitHub profiles to a private, browser-specific shortlist backed by PostgreSQL
 
-Saved profiles are isolated by an anonymous, HttpOnly browser cookie. They persist across visits in that browser, but are not synced across devices; clearing the site's cookies starts a new shortlist.
+Watchlist entries are isolated by an anonymous, HttpOnly browser cookie. They persist across visits in that browser, but are not synced across devices; clearing the site's cookies starts a new list. README and workflow checks are limited to the 12 most recently updated original repositories per lookup to conserve GitHub's unauthenticated API quota; uninspected repositories are clearly marked.
 
 The current version reads public GitHub data. It does not sign users in or access private repositories.
 
@@ -77,7 +79,7 @@ Open `http://localhost:5173`. The Vite development server forwards `/api` reques
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/api/health` | Service health check |
-| `GET` | `/api/github/:username` | Public profile and up to 100 recently updated repositories |
+| `GET` | `/api/github/:username` | Public profile, up to 100 repositories, and portfolio audit signals |
 | `GET` | `/api/saved-profiles` | List profiles saved by this browser session |
 | `POST` | `/api/saved-profiles` | Save a GitHub username (`{ "username": "octocat" }`) |
 | `DELETE` | `/api/saved-profiles/:username` | Remove one saved profile |
@@ -95,6 +97,7 @@ The repository includes a Render Blueprint in `render.yaml`. It builds the Vite 
 - [x] Repository search and sorting
 - [x] Language breakdown
 - [ ] Capture and add an application screenshot
+- [x] Add repository portfolio checks and actionable improvement suggestions
 - [x] Deploy the live demo
 - [x] Add PostgreSQL persistence for saved GitHub profiles
 - [ ] Add authenticated GitHub access for private repositories
