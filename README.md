@@ -77,7 +77,7 @@ GitHub API access is performed by the server, so the browser does not call GitHu
 
 ## Deployment
 
-The repository includes a Render Blueprint in `render.yaml`. It builds the Vite client and serves the generated static files from Express, so the UI and API share one service and origin. Render deploys this repository's `main` branch. The current Blueprint uses Render's free plan.
+The repository includes a Render Blueprint in `render.yaml`. It builds the Vite client and serves the generated static files from Express, so the UI and API share one service and origin. This service was created from the public repository URL, so automatic deploys are not configured. After pushing changes, use **Manual Deploy** in Render to publish them. The current Blueprint uses Render's free plan.
 
 ## Roadmap
 
